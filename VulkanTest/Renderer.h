@@ -9,11 +9,20 @@
 #include <stdlib.h>
 #include <vector>
 #include <vulkan\vulkan.h>
+#include <sstream>
+
+#ifdef _WIN32
+	#include <Windows.h>
+#endif
 
 class Renderer {
 public:
 	Renderer();
 	virtual ~Renderer();
+
+	uint32_t getGraphicsQueueFamilyIndex() { return graphicsQueueFamilyIndex; }
+	VkDevice *getDevice() { return &device; }
+
 private:
 	void createInstance();
 	void destroyInstance();
@@ -26,6 +35,22 @@ private:
 
 	VkInstance instance;
 	VkDevice device;
+
+	uint32_t graphicsQueueFamilyIndex;
+
+#ifdef _DEBUG
+	//Debugging Stuff
+	void setupDebugging();
+	void startDebugging();
+	void stopDebugging();
+
+	std::vector<const char*> instanceLayers;
+	std::vector<const char*> instanceExtensions;
+
+	VkDebugReportCallbackEXT debugReportCallback = nullptr;
+	VkDebugReportCallbackCreateInfoEXT debugReportCallbackCreateInfo = {};
+#endif
+
 };
 
 #endif //VULKANTEST_RENDERER_H
